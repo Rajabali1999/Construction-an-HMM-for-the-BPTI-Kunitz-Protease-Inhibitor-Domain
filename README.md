@@ -1,2 +1,2 @@
-# Construction-an-HMM-for-the-BPTI-Kunitz-Protease-Inhibitor-Domain
+# Construction an HMM for the BPTI Kunitz-Protease Inhibitor Domain
 This repository implements a pipeline to detect the BPTI/Kunitz protease inhibitor domain (PF00014) using profile HMMs. It integrates structural bioinformatics and sequence modeling to build a structure-guided HMM and compare its performance to a standard MSA-based HMM, testing whether structure improves detection. in real proteins across datasets
