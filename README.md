@@ -40,6 +40,7 @@ AND Annotation Type = "Pfam" ) AND Polymer Entity Sequence Length <= 80 AND
 Polymer Entity Sequence Length >= 45
 
 • Press the custom report with the following flags:
+
 • Entry ID
 
 • PDB ID
@@ -149,4 +150,17 @@ set 1 and set 2 (structure-based model).
 
 • temp_overall.class: Classification results for the combined dataset (positive +
 negative), used to estimate overall performance for each threshold
+
+
+
+# Author
+
+Rajab Ali
+
+rajab.ali2@studio.unibo.it
+
+rajabaliqambrani98@gmail.com
+
+
+Department of Pharmacy & Biotechnology (Fabit), Alma Master Studiorum – University of Bologna
 
