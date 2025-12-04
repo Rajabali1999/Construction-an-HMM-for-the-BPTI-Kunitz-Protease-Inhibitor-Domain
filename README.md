@@ -13,15 +13,20 @@ Protein domains like Kunitz often preserve their core structure and functional r
 even across distantly related sequences. Profile HMMs model this variability by
 capturing:
 • Conserved residues (emissions)
+
 • Insertions/deletions (gaps)
+
 • Probabilities across positions
+
 By training an HMM on multiple structurally aligned domain instances, we can more
 accurately detect related proteins—even when sequence identity is low.
 
 
 # Required Tools
 Install these via conda:
+
 conda install -c bioconda cd-hit hmmer blast muscle
+
 conda install -c conda-forge biopython
 
 <img width="760" height="280" alt="image" src="https://github.com/user-attachments/assets/04c74ece-ea24-46a4-a6c8-ccb955864e31" />
@@ -29,54 +34,87 @@ conda install -c conda-forge biopython
 
 # Pipeline Steps
 1. Extract Representative Kunitz Sequences from PDB
+   
 • Use advanced search: Data Collection Resolution <= 3.5 AND ( Identifier = "PF00014"
 AND Annotation Type = "Pfam" ) AND Polymer Entity Sequence Length <= 80 AND
 Polymer Entity Sequence Length >= 45
+
 • Press the custom report with the following flags:
 • Entry ID
+
 • PDB ID
+
 • Entity ID
+
 • Auth Asym ID
+
 • Sequence
+
 • Annotation Identifier
+
 • Data collection resolution
+
 This will output a .CSV file. Then execute the following bash script:
 Code: bash script_recover_representative_kunitz.sh
+
 This will do the following operations:
+
 • Extract sequences of PF00014 domains from the PDB custom report
+
 • Cluster the sequences using CD-HIT at 90% identity threshold
+
 • Extract the most representative ID from each cluster
+
 • Retrieve the sequences of the representative IDs and store them in a new FASTA file.
+
 • Generate the PDBefold file (convert IDs to the expected format:PDB:CHAIN): tmp_pdb_efold_ids.txt
+
 • BEFORE GOING TO THE NEXT STEP: check in the tmp_pdb_efold_ids.txt file.
 sequences that are too long and remove them.
 
 
 # 2. Download the full Swiss-Prot protein dataset in FASTA format, used to extract negative sets and full Kunitz reference
 • Go to https://www.uniprot.org/ and save the FASTA file as uniprot_sprot.fasta
+
 . Download all Kunitz proteins in FASTA format
+
 • Go to https://www.uniprot.org/ and save the FASTA file as all_kunitz.fasta
 
 # 3. Structural Alignment
+
 Use PDBeFold :
+
 • Input: tmp_pdb_efold_ids.txt (PDB IDs)
+
 • Output: Aligned FASTA file pdb_kunitz_rp.ali
 
 # 4. Build HMM from Structural Alignment
+
 bash create_hmm_str.sh
+
 bash create_testing_sets.sh
+
 • Build a structural HMM from the PDBeFold structural alignment
+
 • Remove training sequences from the full dataset and generate random subsets of
 positive and negative sequences, which will be used to create test sets
+
 • Automatically identify the optimal E-value thresholds via MCC evaluation (2-fold CV)
+
 • Perform evaluation on: Set 1, using Set 2’s threshold; Set 2, using Set 1’s threshold; Combined Set 1 + Set 2, using both thresholds for overall assessment
+
 • Report MCC, precision, recall, and identify false positives and false negatives Write detailed results to hmm_results_strali.txt
 
 # 5. Evaluate Performance
+
 Use the provided script performance.py to compute:
+
 • MCC (Matthews Correlation Coefficient)
+
 • Accuracy (Q2)
+
 • True Positive Rate (TPR)
+
 • Precision (PPV)
 
 # 6. Plot the confusion matrices for each run resulting in the hmm_results_strali.txt file
